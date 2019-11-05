@@ -181,6 +181,8 @@ int WzSerialPort::send(const char *buf,int len)
 int WzSerialPort::receive(char *buf,int maxlen)
 {
 	HANDLE hCom = *(HANDLE*)pHandle;
+	
+	DWORD read_size;
 
 	if (this->synchronizeflag)
 	{
@@ -189,13 +191,13 @@ int WzSerialPort::receive(char *buf,int maxlen)
 		BOOL bReadStat = ReadFile(hCom, //串口句柄
 									buf, //数据首地址
 									wCount, //要读取的数据最大字节数
-									&wCount, //DWORD*,用来接收返回成功读取的数据字节数
+									&read_size, //DWORD*,用来接收返回成功读取的数据字节数
 									NULL); //NULL为同步发送，OVERLAPPED*为异步发送
 		if (!bReadStat)
 		{
 			return 0;
 		}
-		return wCount;
+		return read_size;
 	}
 	else
 	{

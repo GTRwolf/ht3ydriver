@@ -1,26 +1,27 @@
 ﻿#include <iostream>
 #include "WzSerialPort.h"
 #include "HT3YDRIVER.h"
+#include <Windows.h>
 
 using namespace std;
 
-int main(int argumentCount, const char* argumentValues[]) {
+int main(int argc, const char* arv[]) {
 	char read_buffer[1024] = {};
+	std::vector<mavlink_px4tonuc_t> vt_mavlink_px4tonuc;
+	std::vector<mavlink_attitude_t> vt_attitude;
+	//mavlink_message_t msg;
+	//mavlink_status_t msg_status;
 	HT3YDRIVER ht3y_driver;
-	int a = ht3y_driver.init("COM3", 9600, 8, NO, 1);
-	char buf[1024] = "test, write!!!";
-	ht3y_driver.write_test(buf, strlen(buf));
-	printf("init successful ！！！%d\n", a);
-	uint16_t sz;	
-	//ht3y_driver.write_test(buf, strlen(buf));
-	printf("send a buffer ！！！\n");
-	while (true) {
-		Sleep(200);
-		printf("wait 200ms, %d\n", ht3y_driver.i);
+	uint16_t size = 0;
+	uint64_t thread_id = ht3y_driver.init("COM3",57600, 8, NO, 1);
+	char buf[20] = "test, write";
+	ht3y_driver.read(vt_attitude, read_buffer, size);
+	//std::cout << "main thread : vt_attitude size is" << vt_attitude.size() << std::endl;
+	for (int i = 0; i < 20; i++) {
+		ht3y_driver.write(buf, strlen(buf));
+		ht3y_driver.read(vt_attitude, read_buffer, size);
+		//std::cout << "main thread : vt_attitude size is" << vt_attitude.size() << std::endl;
+		Sleep(10);
 	}
-	//int rCount = ht3y_driver.read_test(read_buffer);
-	//std::cout << "read buffer is :" << read_buffer << std::endl;
-	//std::cout << "read buffer size is :" << rCount << std::endl;
-	getchar();
 	return 0;
 }

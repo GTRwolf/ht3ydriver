@@ -23,7 +23,7 @@ public:
 	// databit(数据位): 4-8(windows),5-8(linux)，通常为8位
 	// stopbit(停止位): 1为1位停止位，2为2位停止位,3为1.5位停止位
 	// synchronizeflag(同步、异步,仅适用与windows): 0为异步，1为同步
-	bool open(const char* portname, int baudrate, char parity, char databit, char stopbit, char synchronizeflag=1);
+	bool open(const char* portname, int baudrate, char parity, char databit, char stopbit, char synchronizeflag);
 
 	//关闭串口，参数待定
 	void close();
@@ -44,8 +44,8 @@ private:
 	}
 	static WzSerialPort* ms_instance;
 
-	int pHandle[16];
-	char synchronizeflag;
+	int pHandle[16] = {};
+	char synchronizeflag = 0;
 };
 
 #endif
